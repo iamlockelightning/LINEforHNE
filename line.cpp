@@ -114,7 +114,7 @@ int AddVertex(char *name)
 void ReadData()
 {
 	FILE *fin;
-	char name_v1[MAX_STRING], name_v2[MAX_STRING], str[2 * MAX_STRING + 10000];
+	char name_v1[MAX_STRING], name_v2[MAX_STRING], str[2 * MAX_STRING + 10000], tp;
 	int vid;
 	double weight;
 
@@ -142,7 +142,7 @@ void ReadData()
 	num_vertices = 0;
 	for (int k = 0; k != num_edges; k++)
 	{
-		fscanf(fin, "%s %s %lf", name_v1, name_v2, &weight);
+		fscanf(fin, "%s %s %lf %c", name_v1, name_v2, &weight, &tp);
 
 		if (k % 10000 == 0)
 		{
