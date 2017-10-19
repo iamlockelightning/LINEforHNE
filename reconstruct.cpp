@@ -148,7 +148,7 @@ void ReadData()
 	fin = fopen(train_file, "rb");
 	for (long long k = 0; k != num_edges; k++)
 	{
-		fscanf(fin, "%s %s %lf", name_v1, name_v2, &weight);
+		fscanf(fin, "%s %s %lf %c", name_v1, name_v2, &weight, &tp);
 
 		if (k % 10000 == 0)
 		{
