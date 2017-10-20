@@ -21,7 +21,7 @@ Publication: Jian Tang, Meng Qu, Mingzhe Wang, Ming Zhang, Jun Yan, Qiaozhu Mei.
 #include <gsl/gsl_rng.h>
 
 
-#define MAX_STRING 100
+#define MAX_STRING 100000
 #define SIGMOID_BOUND 6
 #define NEG_SAMPLING_POWER 0.75
 

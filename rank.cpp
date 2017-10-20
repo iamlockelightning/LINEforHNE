@@ -1,15 +1,15 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <iostream>
+#include <string.h>
 #include <map>
 #include <vector>
 #include <algorithm>
 
 using namespace std;
 
-#define MAX_STRING 10000
+#define MAX_STRING 100000
 
 typedef float real;                    // Precision of float numbers
 
@@ -26,23 +26,28 @@ void ReadEmbedding() {
 
 	FILE *fi;
 	fi = fopen(input_file, "rb");
+	if (fi == NULL) {
+		printf("Vector file 1 not found\n");
+		exit(1);
+	}
 
 	fscanf(fi, "%lld %lld", &num_vertices, &vector_dim);
-	vec = (real *)malloc(vector_dim * sizeof(real));
-	for (a = 0; a < num_vertices; a++)
-	{
-		fscanf(fi, "%s%c", name, &ch);
+	for (a = 0; a < num_vertices; a++) {
+		vec = (real *)malloc(vector_dim * sizeof(real));
+		fscanf(fi, "%s", name);
+		ch = fgets(fi);
 		for (b = 0; b < vector_dim; b++) fread(&vec[b], sizeof(real), 1, fi);
 		string nam(name);
 		embedding_dict.insert(map<string, real*>::value_type(nam, vec));
 	}
-	free(vec);
+	printf("embedding_dict: %lu\n", cl_pairs.size());
 	fclose(fi);
 }
 
 void ReadPairs() {
 	long long num_pairs, a;
-	char head[MAX_STRING], tail[MAX_STRING], str[MAX_STRING];
+	char head[MAX_STRING], tail[MAX_STRING], str[MAX_STRING], tp;
+	real wei;
 	FILE *fi;
 	fi = fopen(pair_file, "rb");
 	num_pairs = 0;
@@ -51,13 +56,15 @@ void ReadPairs() {
 	
 	fi = fopen(pair_file, "rb");
 	for (a = 0; a < num_pairs; a++) {
-		fscanf(fi, "%s\t%s", head, tail);
-		cl_pairs.push_back(make_pair(head, tail));
+		fscanf(fi, "%s\t%s\t%f\t%c", head, tail, &wei, &tp);
+
+		map<string, real*>::iterator h = embedding_dict.find(head);
+        map<string, real*>::iterator e = embedding_dict.find(tail);
+        if (h!=embedding_dict.end() && e!=embedding_dict.end()) {
+			cl_pairs.push_back(make_pair(head, tail));
+		}
 	}
 	printf("%lu\n", cl_pairs.size());
-	cout << cl_pairs[0].first << "  " << cl_pairs[0].second << endl;
-	cout << cl_pairs[1].first << "  " << cl_pairs[1].second << endl;
-	// random_shuffle(cl_pairs.begin(), cl_pairs.end());
 }
 
 real L1norm (real* a, real* b) {
@@ -98,10 +105,7 @@ void Rank() {
 	ReadEmbedding();
 	ReadPairs();
 
-	
-
-
-
+	/*
 	vector<int> ranks;
 	for (int i = 0; i < cl_pairs.size(); i += 1) {
 		int r = -1;
@@ -140,6 +144,7 @@ void Rank() {
     hits_at_10 /= ranks.size();
 
     printf("Mean Rank: %.3lf%%, Hits@10: %.3lf%%\n", mean_rank, hits_at_10);
+    */
 }
 
 int ArgPos(char *str, int argc, char **argv) {
